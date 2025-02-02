@@ -93,16 +93,32 @@
         }
 
         // Заглушка для сохранения
-        function saveBot() {
-            const statusElement = document.getElementById('status');
-            statusElement.textContent = "⏳ Функционал в разработке...";
-            statusElement.style.color = "#ffc107";
-            
-            // Очистка через 3 секунды
-            setTimeout(() => {
-                statusElement.textContent = "";
-            }, 3000);
-        }
+    async function saveBot() {
+    const token = document.getElementById('token').value;
+    const commands = Array.from(document.querySelectorAll('.command')).map(cmd => ({
+        trigger: cmd.querySelector('.command-trigger').value,
+        response: cmd.querySelector('.command-response').value
+    }));
+
+    // Сохраняем данные в Supabase
+    const response = await fetch('https://rjkqoxcwgrejkwrqqntc.supabase.co/rest/v1/bots', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJqa3FveGN3Z3Jlamt3cnFxbnRjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzg0ODExNjIsImV4cCI6MjA1NDA1NzE2Mn0._4P8Jw4J0bx4VJq8q5BCfBbkbTkDKVlNjkNrfAM-LuQ',
+        },
+        body: JSON.stringify({
+            bot_token: token,
+            commands: commands
+        })
+    });
+
+    if (response.ok) {
+        document.getElementById('status').textContent = "✅ Бот сохранен! Скоро активируем...";
+    } else {
+        document.getElementById('status').textContent = "❌ Ошибка сохранения";
+    }
+}
     </script>
 </body>
 </html>
